@@ -1,0 +1,17 @@
+# Default values for node-express-chart.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: 096436823527.dkr.ecr.ap-south-1.amazonaws.com/node_express_mysql:1.0
+
+application:
+  name: node-express-app  
+
+additionalImage:
+  repository: 096436823527.dkr.ecr.ap-south-1.amazonaws.com/mysql:2.0
+
+additionalApplication:
+  name: mysql-db 

@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{.Values.application.name}}
+  labels:
+    run: {{.Values.application.name}}
+spec:
+  ports:
+  - port: 80
+    targetPort: 8081
+    protocol: TCP
+  selector:
+    app: {{.Values.application.name}}
+  type: LoadBalancer
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{.Values.additionalApplication.name}}
+spec:
+  ports:
+    - port: 3306
+  selector:
+    app: {{.Values.additionalApplication.name}}

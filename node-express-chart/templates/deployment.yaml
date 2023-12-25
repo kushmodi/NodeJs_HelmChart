@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{.Values.application.name}}
+spec:
+  replicas: {{.Values.replicaCount}}
+  selector:
+    matchLabels:
+      app: {{.Values.application.name}}
+  template:
+    metadata:
+      labels:
+        app: {{.Values.application.name}}
+    spec:
+      containers:
+        - name: {{.Values.application.name}}
+          image: {{.Values.image.repository}}
+          ports:
+            - containerPort: 6868
+          env:
+            - name: MYSQL_HOST
+              valueFrom:
+               secretKeyRef:
+                 name: my-secret
+                 key: host
+            - name: MYSQL_USER
+              valueFrom:
+               secretKeyRef:
+                 name: my-secret
+                 key: username
+            - name: MYSQL_PASSWORD
+              valueFrom:
+               secretKeyRef:
+                 name: my-secret
+                 key: password
+            - name: MYSQL_DATABASE
+              valueFrom:
+               secretKeyRef:
+                 name: my-secret
+                 key: database
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-db
+spec:
+  replicas: {{.Values.replicaCount}}
+  selector:
+    matchLabels:
+      app: {{.Values.additionalApplication.name}}
+  template:
+    metadata:
+      labels:
+        app: {{.Values.additionalApplication.name}}
+    spec:
+      containers:
+        - name: {{.Values.additionalApplication.name}}
+          image: {{.Values.additionalImage.repository}}
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+               secretKeyRef:
+                 name: my-secret
+                 key: password
+            - name: MYSQL_DATABASE
+              valueFrom:
+               secretKeyRef:
+                 name: my-secret
+                 key: database
+          ports:
+            - containerPort: 3306
